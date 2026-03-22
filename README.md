@@ -1,89 +1,148 @@
-# 🏴‍☠️ Luffy Bot — Telegram Bot
+# 🏴‍☠️ Luffy Telegram Chatbot
 
-A Telegram bot that talks like **Monkey D. Luffy** from One Piece!  
-Powered by **Google Gemini** and built with **python-telegram-bot**.
-
----
-
-## 📁 Project Structure
-
-```
-Luffy Bot/
-├── bot.py             # Main bot logic
-├── config.py          # API keys go here
-├── requirements.txt   # Python dependencies
-└── README.md          # You are here!
-```
+A fun and interactive Telegram chatbot that talks like **Monkey D. Luffy** from *One Piece* — energetic, fearless, and always chasing adventure!
 
 ---
 
-## 🚀 Setup Guide
+## 🚀 Features
 
-### 1. Get Your API Keys
+* 🧠 AI-powered responses using Groq API
+* 🏴‍☠️ Luffy-style personality (fun, simple, chaotic energy)
+* 💬 Real-time replies on Telegram
+* ⚡ Fast responses using LLM models
+* 🔄 Supports conversation flow (basic memory)
 
-#### Telegram Bot Token
-1. Open Telegram and search for **@BotFather**
-2. Send `/newbot` and follow the prompts
-3. Copy the **bot token** you receive
+---
 
-#### Google Gemini API Key
-1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Click **"Create API Key"**
-3. Copy the generated key
+## 🛠️ Tech Stack
 
-### 2. Insert Your Keys
+* Python 3.10+
+* python-telegram-bot (v20+)
+* Groq API (Llama models)
+* httpx (for API requests)
 
-Open `config.py` and replace the placeholder strings:
+---
 
-```python
-TELEGRAM_BOT_TOKEN = "your-telegram-bot-token"
-GOOGLE_API_KEY = "your-google-gemini-api-key"
+## 📂 Project Structure
+
+```
+luffy-bot/
+│
+├── bot.py          # Main bot logic
+├── config.py       # API keys and configuration
+├── README.md       # Project documentation
 ```
 
-### 3. Install Dependencies
+---
 
-```bash
-pip install -r requirements.txt
+## 🔑 Setup Instructions
+
+### 1. Clone the repository
+
+```
+git clone https://github.com/your-username/luffy-bot.git
+cd luffy-bot
 ```
 
-### 4. Run the Bot
+---
 
-```bash
+### 2. Install dependencies
+
+```
+pip install python-telegram-bot httpx
+```
+
+---
+
+### 3. Create `config.py`
+
+Create a file named `config.py` and add:
+
+```
+TELEGRAM_BOT_TOKEN = "your_telegram_bot_token_here"
+
+GROQ_API_KEY = "your_groq_api_key_here"
+
+GROQ_MODEL = "llama-3.3-70b-versatile"
+
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+```
+
+---
+
+### 4. Run the bot
+
+```
 python bot.py
 ```
 
-You should see:
+---
+
+## 🤖 How it Works
+
+1. User sends message on Telegram
+2. Bot receives message
+3. Message is sent to Groq API
+4. AI generates Luffy-style reply
+5. Bot sends reply back to user
+
+---
+
+## 🧠 Luffy Personality
+
+The chatbot is designed to:
+
+* Speak in a **simple, energetic tone**
+* Love adventure, food, and freedom 🍖
+* Be fearless and a little goofy
+* Avoid complex explanations
+* Stay fully in character
+
+Example:
+
 ```
-🏴‍☠️ Luffy Bot is setting sail...
-✅ Bot is running! Press Ctrl+C to stop.
+User: I feel tired  
+Luffy: Tired ah? 😤 Come on! Let’s eat meat and go on an adventure! Shishishi!
 ```
 
 ---
 
-## 🤖 Bot Commands
+## 🔒 Notes
 
-| Command  | Description                  |
-|----------|------------------------------|
-| `/start` | Luffy greets you!            |
-| `/help`  | Shows available commands     |
-| `/reset` | Resets conversation history  |
-
-Just send any text message and Luffy will reply!
+* Bot works only while the script is running
+* Do not expose your API keys publicly
+* Telegram bots are publicly accessible (can be restricted in code)
 
 ---
 
-## ✨ Features
+## ⚠️ Troubleshooting
 
-- 🧠 **Luffy Personality** — Strong system prompt keeps Luffy in character
-- 💬 **Chat Memory** — Each user has their own conversation history
-- ⚡ **Async** — Uses modern async/await syntax
-- 🔄 **Reset** — Users can clear their history with `/reset`
-- 🛡️ **Error Handling** — Graceful error messages if the API fails
+* ❌ `409 Conflict error`
+  → Stop multiple running instances of the bot
+
+* ❌ `Model decommissioned`
+  → Update `GROQ_MODEL` to latest version
+
+* ❌ No response from bot
+  → Check API key and internet connection
 
 ---
 
-## 📝 Notes
+## 🌟 Future Improvements
 
-- The bot uses **Gemini 2.0 Flash** for fast responses
-- Chat history is stored **in memory** (resets when the bot restarts)
-- You can customize Luffy's personality by editing `LUFFY_SYSTEM_PROMPT` in `bot.py`
+* 🧠 Better memory (long conversations)
+* 🎙️ Voice replies (Luffy-style)
+* ☁️ Cloud deployment (24/7 uptime)
+* 🎮 Custom commands (/adventure, /food, etc.)
+
+---
+
+## 🏁 Final Note
+
+This project is for fun and learning.
+Not affiliated with *One Piece* officially.
+
+---
+
+**“I’m gonna be King of the Pirates!” 🏴‍☠️**
+
