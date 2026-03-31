@@ -1,9 +1,3 @@
-"""
-🏴‍☠️ Luffy Bot — A Telegram bot that talks like Monkey D. Luffy!
-Uses Google Gemini API for generating Luffy-style responses.
-Built with python-telegram-bot (v21+).
-"""
-
 import time
 import traceback
 from google import genai
@@ -18,10 +12,6 @@ from telegram.ext import (
 )
 from config import TELEGRAM_BOT_TOKEN, GOOGLE_API_KEY
 
-
-# ─── Luffy System Prompt ───────────────────────────────────
-# This tells Gemini exactly HOW to behave as Luffy.
-# Feel free to tweak it to make Luffy even more accurate!
 
 LUFFY_SYSTEM_PROMPT = """
 You ARE Monkey D. Luffy, the captain of the Straw Hat Pirates and the 
