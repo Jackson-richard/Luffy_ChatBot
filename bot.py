@@ -58,18 +58,9 @@ Important rules:
 """
 
 
-# ─── Configure Google Gemini Client ────────────────────────
-# Creates a Gemini client using your API key from config.py
 
 client = genai.Client(api_key=GOOGLE_API_KEY)
-
-# Model to use — gemini-1.5-flash has generous free-tier limits
 GEMINI_MODEL = "gemini-1.5-flash"
-
-
-# ─── Per-User Chat History (for memory) ────────────────────
-# Each Telegram user gets their own conversation history
-# so conversations feel natural with context.
 
 user_chats: dict[int, list] = {}
 
@@ -78,12 +69,9 @@ def get_reply(user_id: int, user_message: str) -> str:
     """
     Send user's message to Gemini and return the response.
     Includes automatic retry if rate-limited (429 error).
-    """
-    # Create conversation history for new users
+    
     if user_id not in user_chats:
         user_chats[user_id] = []
-
-    # Add the user's message to their history
     user_chats[user_id].append(
         types.Content(
             role="user",
@@ -91,25 +79,22 @@ def get_reply(user_id: int, user_message: str) -> str:
         )
     )
 
-    # Retry up to 3 times if we hit rate limits
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            # Call Gemini API with conversation history + system prompt
+            
             response = client.models.generate_content(
                 model=GEMINI_MODEL,
                 contents=user_chats[user_id],
                 config=types.GenerateContentConfig(
                     system_instruction=LUFFY_SYSTEM_PROMPT,
-                    temperature=0.9,       # More creative/fun responses
-                    max_output_tokens=500,  # Keep replies concise
+                    temperature=0.9,       
+                    max_output_tokens=500,  
                 ),
             )
 
-            # Extract the reply text
             reply_text = response.text
 
-            # Save the model's reply to conversation history
             user_chats[user_id].append(
                 types.Content(
                     role="model",
@@ -123,20 +108,15 @@ def get_reply(user_id: int, user_message: str) -> str:
             error_msg = str(e)
             print(f"⚠️ Attempt {attempt + 1}/{max_retries} failed: {error_msg}")
 
-            # If rate limited (429), wait and retry
+            
             if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
                 wait_time = (attempt + 1) * 10  # 10s, 20s, 30s
                 print(f"⏳ Rate limited! Waiting {wait_time}s before retry...")
                 time.sleep(wait_time)
             else:
-                # For non-rate-limit errors, don't retry — just raise
+                
                 raise
 
-    # If all retries exhausted, raise the error
-    raise Exception("Rate limit exceeded after all retries. Please wait a minute.")
-
-
-# ─── Bot Command Handlers ─────────────────────────────────
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles the /start command — Luffy greets the user."""
@@ -172,25 +152,21 @@ async def reset_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     )
 
 
-# ─── Message Handler (Main Logic) ─────────────────────────
-
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles any text message from the user."""
     user_message = update.message.text
     user_id = update.effective_user.id
 
-    # Show "typing..." indicator while waiting for Gemini
     await update.message.chat.send_action("typing")
 
     try:
         reply = get_reply(user_id, user_message)
 
     except Exception as e:
-        # Print the FULL error with traceback for debugging
+        
         print(f"❌ Gemini API error:")
         traceback.print_exc()
 
-        # Send a helpful error message to the user (not just fallback)
         error_str = str(e)
         if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
             reply = (
@@ -208,14 +184,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     await update.message.reply_text(reply)
 
 
-# ─── Main — Start the Bot ─────────────────────────────────
 
 def main() -> None:
     """Build and run the Telegram bot."""
     print("🏴‍☠️ Luffy Bot is setting sail...")
     print(f"📡 Using model: {GEMINI_MODEL}")
-
-    # Quick test: verify the Gemini API key works
     try:
         test = client.models.generate_content(
             model=GEMINI_MODEL,
@@ -225,18 +198,15 @@ def main() -> None:
     except Exception as e:
         print(f"❌ Gemini API test FAILED: {e}")
         print("⚠️ Check your GOOGLE_API_KEY in config.py!")
-        return  # Don't start the bot if API key is broken
+        return  
 
-    # Build the Telegram bot
     app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
 
-    # Register handlers
     app.add_handler(CommandHandler("start", start_command))
     app.add_handler(CommandHandler("help", help_command))
     app.add_handler(CommandHandler("reset", reset_command))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    # Start polling
     print("✅ Bot is running! Press Ctrl+C to stop.")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
